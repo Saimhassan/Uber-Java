@@ -32,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        firebaseAuth.addAuthStateListener(listener);
+        delaySplashScreen();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         listener = myFirebaseAuth->{
             FirebaseUser user = myFirebaseAuth.getCurrentUser();
             if (user != null)
-                delaySplashScreen();
+                Toast.makeText(this, "Welcome:"+user.getUid(), Toast.LENGTH_SHORT).show();
             else
                 showLogInLayout();
         };
@@ -75,20 +75,19 @@ public class SplashScreenActivity extends AppCompatActivity {
         .createSignInIntentBuilder()
         .setAuthMethodPickerLayout(authMethodPickerLayout)
         .setIsSmartLockEnabled(false)
+                .setTheme(R.style.LogInTheme)
         .setAvailableProviders(providers)
         .build(),LOG_IN_REQUEST_CODE);
 
     }
 
     private void delaySplashScreen() {
-        Completable.timer(5,TimeUnit.SECONDS,
+        Completable.timer(3,TimeUnit.SECONDS,
                 AndroidSchedulers.mainThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        Toast.makeText(SplashScreenActivity.this, "Welcome:"+FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .subscribe(() ->
+                        //After splash screen ask for login
+                        firebaseAuth.addAuthStateListener(listener)
+                        );
     }
 
     @Override
