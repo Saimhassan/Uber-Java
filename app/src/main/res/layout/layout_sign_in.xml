@@ -38,7 +38,7 @@
             android:padding="16dp"
             android:textColor="@android:color/black"
             android:text="Sign In with Email"
-            android:drawableStart="@drawable/googleg_standard_color_18"/>
+            android:drawableStart="@drawable/fui_ic_googleg_color_24dp"/>
 
 
 
