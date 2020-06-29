@@ -54,7 +54,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_second_name"
+                        android:id="@+id/edt_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/last_name" />
@@ -82,7 +82,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/btn_continue"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
