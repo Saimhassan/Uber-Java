@@ -144,6 +144,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             else if (TextUtils.isEmpty(edt_phone_number.getText().toString()))
             {
                 Toast.makeText(this, "Please enter phone number", Toast.LENGTH_SHORT).show();
+
                 return;
             }
             else
@@ -155,9 +156,15 @@ public class SplashScreenActivity extends AppCompatActivity {
                 model.setRating(0.0);
                 driverInfoRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .setValue(model)
-                        .addOnFailureListener(e -> Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show()).
+                        .addOnFailureListener(e ->
+                        {
+                            dialog.dismiss();
+                            Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }).
                         addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         });
             }
 
