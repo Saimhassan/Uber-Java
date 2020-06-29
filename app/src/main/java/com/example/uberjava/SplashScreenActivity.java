@@ -14,9 +14,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.uberjava.Model.DrierInfoModel;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -118,9 +121,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         Button btn_continue = (Button)itemView.findViewById(R.id.btn_continue);
 
         //Set Data
-        if (firebaseAuth.getInstance().getCurrentUser().getPhoneNumber() != null &&
-                TextUtils.isEmpty(firebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
-        edt_phone_number.setText(firebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+        if (FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber() != null &&
+                TextUtils.isEmpty(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
+        edt_phone_number.setText(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
 
         //Set View
         builder.setView(itemView);
@@ -142,6 +145,20 @@ public class SplashScreenActivity extends AppCompatActivity {
             {
                 Toast.makeText(this, "Please enter phone number", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            else
+            {
+                DrierInfoModel model = new DrierInfoModel();
+                model.setFirstName(edt_first_name.getText().toString());
+                model.setLastName(edt_last_name.getText().toString());
+                model.setPhoneNumber(edt_phone_number.getText().toString());
+                model.setRating(0.0);
+                driverInfoRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .setValue(model)
+                        .addOnFailureListener(e -> Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show()).
+                        addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
+                        });
             }
 
         });
