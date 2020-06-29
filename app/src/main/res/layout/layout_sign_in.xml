@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/rider_splash_screen"
+    android:background="@drawable/bookinglogo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
