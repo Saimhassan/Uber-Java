@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    
+
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <item name="android:windowBackground">@drawable/car</item>
@@ -32,7 +32,7 @@
         <item name="android:windowBackground">@drawable/car</item>
         <item name="android:windowFullscreen">true</item>
     </style>
-    
+
     <style name="DialogTheme" parent="android:Theme.Dialog">
 
         <item name="android:layout_width">match_parent</item>
@@ -41,5 +41,14 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

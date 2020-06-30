@@ -116,14 +116,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register,null);
         TextInputEditText edt_first_name = (TextInputEditText)itemView.findViewById(R.id.edt_first_name);
         TextInputEditText edt_last_name = (TextInputEditText)itemView.findViewById(R.id.edt_last_name);
-        TextInputEditText edt_phone_number = (TextInputEditText)itemView.findViewById(R.id.edt_phone_number);
+        TextInputEditText edt_phone = (TextInputEditText)itemView.findViewById(R.id.edt_phone_number);
 
         Button btn_continue = (Button)itemView.findViewById(R.id.btn_continue);
 
         //Set Data
         if (FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber() != null &&
-                TextUtils.isEmpty(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
-        edt_phone_number.setText(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+                !TextUtils.isEmpty(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
+        edt_phone.setText(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
 
         //Set View
         builder.setView(itemView);
@@ -141,7 +141,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please enter last name", Toast.LENGTH_SHORT).show();
                 return;
             }
-            else if (TextUtils.isEmpty(edt_phone_number.getText().toString()))
+            else if (TextUtils.isEmpty(edt_phone.getText().toString()))
             {
                 Toast.makeText(this, "Please enter phone number", Toast.LENGTH_SHORT).show();
 
@@ -152,7 +152,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 DrierInfoModel model = new DrierInfoModel();
                 model.setFirstName(edt_first_name.getText().toString());
                 model.setLastName(edt_last_name.getText().toString());
-                model.setPhoneNumber(edt_phone_number.getText().toString());
+                model.setPhoneNumber(edt_phone.getText().toString());
                 model.setRating(0.0);
                 driverInfoRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .setValue(model)
@@ -160,11 +160,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                         {
                             dialog.dismiss();
                             Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
+                            progress_bar.setVisibility(View.GONE);
                         }).
                         addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
+                            progress_bar.setVisibility(View.GONE);
                         });
             }
 
