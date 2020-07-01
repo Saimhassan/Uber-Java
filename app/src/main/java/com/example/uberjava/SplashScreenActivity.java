@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.DriverPropertyInfo;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -96,7 +97,9 @@ public class SplashScreenActivity extends AppCompatActivity {
            @Override
            public void onDataChange(@NonNull DataSnapshot snapshot) {
                if (snapshot.exists()){
-                   Toast.makeText(SplashScreenActivity.this, "User already register", Toast.LENGTH_SHORT).show();
+                 //  Toast.makeText(SplashScreenActivity.this, "User already register", Toast.LENGTH_SHORT).show();
+                   DrierInfoModel drierInfoModel = snapshot.getValue(DrierInfoModel.class);
+                  goToHomeActivity(drierInfoModel);
                }
                else
                {
@@ -109,6 +112,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                Toast.makeText(SplashScreenActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
            }
        });
+    }
+
+    private void goToHomeActivity(DrierInfoModel drierInfoModel) {
+        Common.currentUser = drierInfoModel;
+        startActivity(new Intent(SplashScreenActivity.this,DriverHomeActiity.class));
+        finish();
     }
 
     private void showRegisterLayout() {
@@ -166,6 +175,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                             progress_bar.setVisibility(View.GONE);
+                            goToHomeActivity(model);
                         });
             }
 
