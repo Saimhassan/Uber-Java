@@ -14,12 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.Utils.UserUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +40,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.sql.Driver;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class DriverHomeActiity extends AppCompatActivity {
 
@@ -45,8 +55,6 @@ public class DriverHomeActiity extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri imageUri;
     private ImageView img_avatar;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +93,51 @@ public class DriverHomeActiity extends AppCompatActivity {
     }
 
     private void showUploadDialig() {
-        
+        AlertDialog.Builder builder = new AlertDialog.Builder(DriverHomeActiity.this);
+        builder.setTitle("Change Profile Picture")
+                .setMessage("Do you really want to change profile picture?")
+                .setNegativeButton("CANCEL", (dialogInterface, which) -> dialogInterface.dismiss())
+                .setPositiveButton("UPLOAD", (dialog, which) -> {
+                    if (imageUri != null)
+                    {
+                        waitingDialog.setMessage("uploading....");
+                        waitingDialog.show();
+                        String unique_name = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        StorageReference avatarFolder = storageReference.child("avatars/"+unique_name);
+                        avatarFolder.putFile(imageUri)
+                                .addOnFailureListener(e -> {
+                                    waitingDialog.dismiss();
+                                    Snackbar.make(drawer,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+
+                                }).addOnCompleteListener(task -> {
+                                      if (task.isSuccessful())
+                                      {
+                                          avatarFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                              @Override
+                                              public void onSuccess(Uri uri) {
+                                                  Map<String,Object> updateData = new HashMap<>();
+                                                  updateData.put("avatar",uri.toString());
+
+                                                  UserUtils.updateUser(drawer,updateData);
+                                              }
+                                          });
+                                      }
+                                      waitingDialog.dismiss();
+                                }).addOnProgressListener(taskSnapshot -> {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            waitingDialog.setMessage(new StringBuilder("Uploading...").append(progress).append("%"));
+                        });
+                    }
+        }).setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(getResources().getColor(R.color.colorAccent));
+        });
+        dialog.show();
     }
 
     private void init() {
