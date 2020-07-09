@@ -1,8 +1,10 @@
 package com.example.uberjava;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -11,6 +13,7 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -19,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -32,12 +36,15 @@ import java.sql.Driver;
 
 public class DriverHomeActiity extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_REQUEST = 7171;
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private NavController navController;
     private AlertDialog waitingDialog;
     private StorageReference storageReference;
+    private Uri imageUri;
+    private ImageView img_avatar;
 
 
 
@@ -61,6 +68,24 @@ public class DriverHomeActiity extends AppCompatActivity {
 
         init();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK)
+        {
+            if (data != null && data.getData() != null)
+            {
+                imageUri = data.getData();
+                img_avatar.setImageURI(imageUri);
+                showUploadDialig();
+            }
+        }
+    }
+
+    private void showUploadDialig() {
+        
     }
 
     private void init() {
@@ -101,17 +126,24 @@ public class DriverHomeActiity extends AppCompatActivity {
         TextView txt_name = (TextView)headerView.findViewById(R.id.txt_name);
         TextView txt_phone = (TextView)headerView.findViewById(R.id.txt_phone);
         TextView txt_star = (TextView)headerView.findViewById(R.id.txt_star);
-        ImageView img_avatar = (ImageView)headerView.findViewById(R.id.img_avatar);
+        img_avatar = (ImageView)headerView.findViewById(R.id.img_avatar);
 
 
 
         txt_name.setText(Common.buildWelcomeMessage());
         txt_phone.setText(Common.currentUser != null ? Common.currentUser.getPhoneNumber() : "");
         txt_star.setText(Common.currentUser != null ? String.valueOf(Common.currentUser.getRating()): "0.0");
-
+        img_avatar.setOnClickListener(v -> {
+             Intent intent = new Intent();
+             intent.setType("image/*");
+             intent.setAction(Intent.ACTION_GET_CONTENT);
+             startActivityForResult(intent,PICK_IMAGE_REQUEST);
+        });
         if (Common.currentUser != null && Common.currentUser.getAvatar() != null && TextUtils.isEmpty(Common.currentUser.getAvatar()))
         {
-
+            Glide.with(this)
+                    .load(Common.currentUser.getAvatar())
+                    .into(img_avatar);
         }
 
 

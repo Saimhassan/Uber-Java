@@ -1,7 +1,7 @@
 package com.example.uberjava.Model;
 
 public class DrierInfoModel {
-    private String firstName,lastName,phoneNumber;
+    private String firstName,lastName,phoneNumber,avatar;
     private double rating;
 
     public DrierInfoModel() {
@@ -37,5 +37,13 @@ public class DrierInfoModel {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
