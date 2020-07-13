@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.Utils.UserUtils;
 import com.example.uberjava.Model.DrierInfoModel;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
@@ -28,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.sql.DriverPropertyInfo;
 import java.util.Arrays;
@@ -85,6 +89,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         listener = myFirebaseAuth->{
             FirebaseUser user = myFirebaseAuth.getCurrentUser();
             if (user != null) {
+                //Update Token
+                FirebaseInstanceId.getInstance()
+                        .getInstanceId()
+                        .addOnFailureListener(e -> Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show()).
+                        addOnSuccessListener(instanceIdResult -> {
+                            Log.d("TOKEN",instanceIdResult.getToken());
+                            UserUtils.updateToken(SplashScreenActivity.this,instanceIdResult.getToken());
+                        });
                 checkUserFromFirebase();
             }
             else
