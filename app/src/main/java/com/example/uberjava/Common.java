@@ -61,7 +61,13 @@ public class Common {
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setSmallIcon(R.drawable.car)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.car));
-        
+        if (pendingIntent != null)
+        {
+            builder.setContentIntent(pendingIntent);
+        }
+        Notification notification = builder.build();
+        notificationManager.notify(id,notification);
+
 
 
     }
