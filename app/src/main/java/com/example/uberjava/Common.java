@@ -1,12 +1,16 @@
 package com.example.uberjava;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+
+import androidx.core.app.NotificationCompat;
 
 import com.example.uberjava.Model.DrierInfoModel;
 import com.example.uberjava.Services.MyFirebaseMessagingService;
@@ -46,7 +50,19 @@ public class Common {
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
             notificationChannel.setVibrationPattern(new long[]{0,1000,500,1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
         }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,NOTIFICATION_CHANNEL_ID);
+        builder.setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setSmallIcon(R.drawable.car)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.car));
+        
+
 
     }
 }
